@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1778277739197,
+    "nome": "dffddfs",
+    "endereco": "fdsfsfd",
+    "tipo": "Plástico",
+    "data": "2222-02-22",
+    "status": "Em Rota"
+  },
+  {
+    "id": 1778279337728,
+    "nome": "junin o gostosinho",
+    "endereco": "travessa rua borabil",
+    "tipo": "Plástico",
+    "data": "2007-11-21",
+    "status": "Em Rota"
+  },
+  {
+    "id": 1778279666233,
+    "nome": "joao das neves",
+    "endereco": "rua das neves",
+    "tipo": "Papelão",
+    "data": "2026-05-12",
+    "status": "Pendente"
+  }
+]

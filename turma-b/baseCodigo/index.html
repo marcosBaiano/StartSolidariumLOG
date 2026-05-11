@@ -1,0 +1,397 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reciclômetro - Dashboard Completo</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="main-page" class="page">
+        <div class="dashboard">
+            <div class="header">
+                <h1>Reciclômetro</h1>
+                <div class="subtitle">Gestão Operacional · Créditos de Carbono · Logística Inteligente</div>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>💰 Vendas & Leads</h2>
+                        <span class="badge">Meta: 50T</span>
+                    </div>
+                    <div class="metric-large">
+                        <div class="metric-value">R$ 52.000</div>
+                        <div class="metric-label">Total de Vendas de Créditos de Carbono</div>
+                        <span class="trend-up">▲ +12% vs mês anterior</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Volume Comercializado</span>
+                        <span class="info-value">45 Toneladas</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 90%"></div>
+                    </div>
+                    <div class="order-list">
+                        <div class="order-item">
+                            <span>📦 Cliente X</span>
+                            <strong>10T</strong>
+                        </div>
+                        <div class="order-item">
+                            <span>📋 Proposta p/ Cliente Y</span>
+                            <strong>5T</strong>
+                        </div>
+                    </div>
+                    <button class="btn">+ Novo Pedido</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>🛒 Compras & Insumos</h2>
+                        <span class="badge">4 itens pendentes</span>
+                    </div>
+                    <div class="metric-large">
+                        <div class="metric-value">R$ 18.000</div>
+                        <div class="metric-label">Orçamentos Aprovados</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="purchasesChart"></canvas>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Itens a Adquirir</span>
+                        <span class="info-value">4 itens</span>
+                    </div>
+                    <button class="btn">📦 Enviar Pedido</button>
+                    <div style="margin-top: 20px;">
+                        <div class="card-header" style="margin-bottom: 12px;">
+                            <h2 style="font-size: 16px;">🚛 Logística</h2>
+                        </div>
+                        <div class="two-columns">
+                            <div>
+                                <div class="metric-value" style="font-size: 24px;">5</div>
+                                <div class="metric-label">Caminhões Ativos</div>
+                            </div>
+                            <div>
+                                <div class="metric-value" style="font-size: 24px;">22</div>
+                                <div class="metric-label">Coletas p/ hoje</div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Retiradas Agendadas</span>
+                            <span class="info-value">Zona Sul → Zona Norte</span>
+                        </div>
+                        <button class="btn btn-secondary" onclick="abrirLogistica()">🔎 Gestão de Rotas</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>⚙️ Linha de Produção</h2>
+                        <span class="badge">Meta do Dia: 50T</span>
+                    </div>
+                    <div class="metric-large">
+                        <div class="metric-value">42 Toneladas</div>
+                        <div class="metric-label">Produção Atual</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 84%"></div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="productionChart"></canvas>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Status da Linha</span>
+                        <div style="text-align: right;">
+                            <div class="status operating">Triturador 1 (operando)</div>
+                            <div class="status stopped">Lavagem (Parado p/ Manutenção)</div>
+                        </div>
+                    </div>
+                    <div class="alert">⚠️ Manutenção programada - Lavagem retorna em 2h</div>
+                    <div class="info-row">
+                        <span class="info-label">Lotes p/ Processar</span>
+                        <span class="info-value">Lote A · Lote B</span>
+                    </div>
+                    <button class="btn">▶ Iniciar Processo</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📦 Gerenciamento de Estoque</h2>
+                        <span class="badge">R$ 85.000</span>
+                    </div>
+                    <div class="metric-large">
+                        <div class="metric-value">15.000 Itens</div>
+                        <div class="metric-label">Estoque Total</div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Plástico</span>
+                        <div style="text-align: right; flex: 1;">
+                            <div>5T <span style="color:#2e7d32;">(120% Meta)</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar" style="width: 120%; background:#4caf50;"></div></div>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Papelão</span>
+                        <div style="text-align: right; flex: 1;">
+                            <div>10T <span style="color:#ff9800;">(90% Meta)</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar warning" style="width: 90%;"></div></div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="inventoryChart"></canvas>
+                    </div>
+                    <div class="alert">⚠️ Alerta: Repor Plástico (estoque acima da meta, mas demanda alta)</div>
+                    <button class="btn btn-secondary">📥 Controle de Entrada</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📊 Fluxo de Caixa & Custos</h2>
+                        <span class="badge">Saldo pts: 1.200.000</span>
+                    </div>
+                    <div class="two-columns">
+                        <div>
+                            <div class="metric-value" style="font-size: 24px;">R$ 75k</div>
+                            <div class="metric-label">Receita Mensal</div>
+                        </div>
+                        <div>
+                            <div class="metric-value" style="font-size: 24px;">R$ 30k</div>
+                            <div class="metric-label">Despesas Mensais</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 60%; background: #4caf50;"></div>
+                    </div>
+                    <div style="text-align: center; font-size: 13px; margin: 8px 0 16px;">Margem: 60%</div>
+                    <div class="chart-container">
+                        <canvas id="financialChart"></canvas>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Custos por Departamento</span>
+                        <span class="info-value">Produção · Logística · Compras</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-top: 16px;">
+                        <span class="tag">📈 +8% receita</span>
+                        <span class="tag">📉 -5% custos</span>
+                    </div>
+                    <button class="btn btn-secondary">📑 Relatório Financeiro</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>🗺️ Logística & Rotas</h2>
+                        <span class="badge">Frota Ativa: 5 veículos</span>
+                    </div>
+                    <div id="logistics-map"></div>
+                    <div class="route-info">
+                        <strong>🔄 Rota Principal:</strong> Centro de Distribuição → Zona Sul → Zona Leste → Zona Norte
+                    </div>
+                    <div class="two-columns">
+                        <div>
+                            <div class="metric-value" style="font-size: 20px;">12 km</div>
+                            <div class="metric-label">Rota média</div>
+                        </div>
+                        <div>
+                            <div class="metric-value" style="font-size: 20px;">45 min</div>
+                            <div class="metric-label">Tempo médio</div>
+                        </div>
+                        <div>
+                            <div class="metric-value" style="font-size: 20px;">8</div>
+                            <div class="metric-label">Paradas/rota</div>
+                        </div>
+                        <div>
+                            <div class="metric-value" style="font-size: 20px;">92%</div>
+                            <div class="metric-label">Eficiência</div>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Próxima Coleta</span>
+                        <span class="info-value">Cliente X - 10T (15:30)</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Caminhões em Rota</span>
+                        <span class="info-value">3 ativos · 2 em manutenção</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Combustível (médio)</span>
+                        <span class="info-value">8.2 km/L</span>
+                    </div>
+                    <button class="btn" onclick="abrirLogistica()">📍 Abrir Gestão de Coletas</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="logistics-page" class="page">
+        <div class="dashboard">
+            <div class="logistics-header">
+                <h1>🚛 Central Logística</h1>
+                <button class="back-btn" onclick="voltarDashboard()">Voltar Dashboard</button>
+            </div>
+
+            <div class="page-navigation" aria-label="Navegação de seções">
+                <button class="page-btn active" data-section="coleta" onclick="showSection('coleta')">1. Cadastro de Coleta</button>
+                <button class="page-btn" data-section="dashboard" onclick="showSection('dashboard')">2. Dashboard Operacional</button>
+                <button class="page-btn" data-section="rotas" onclick="showSection('rotas')">3. Rotas Inteligentes</button>
+                <button class="page-btn" data-section="lista" onclick="showSection('lista')">4. Listagem de Coletas</button>
+            </div>
+
+            <div class="section-container">
+                <section id="section-coleta" class="section-page active">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>📋 Cadastro de Coleta</h2>
+                            <span class="badge">FRONT-END</span>
+                        </div>
+                        <form id="coletaForm">
+                            <div class="form-grid">
+                                <input type="text" id="nome" placeholder="Nome Cliente" required>
+                                <input type="text" id="endereco" placeholder="Endereço" required>
+                                <select id="tipo">
+                                    <option>Plástico</option>
+                                    <option>Papelão</option>
+                                    <option>Vidro</option>
+                                    <option>Metal</option>
+                                </select>
+                                <input type="date" id="data">
+                            </div>
+                            <button class="btn" type="submit">Cadastrar Coleta</button>
+                        </form>
+                        <div id="mensagem"></div>
+                    </div>
+                </section>
+
+                <section id="section-dashboard" class="section-page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>📊 Dashboard Operacional</h2>
+                            <span class="badge">PESSOA 4</span>
+                        </div>
+                        <div class="two-columns">
+                            <div>
+                                <div class="metric-value" id="totalColetas">0</div>
+                                <div class="metric-label">Total Coletas</div>
+                            </div>
+                            <div>
+                                <div class="metric-value" id="coletasConcluidas">0</div>
+                                <div class="metric-label">Concluídas</div>
+                            </div>
+                            <div>
+                                <div class="metric-value" id="coletasRota">0</div>
+                                <div class="metric-label">Em Rota</div>
+                            </div>
+                            <div>
+                                <div class="metric-value" id="coletasPendentes">0</div>
+                                <div class="metric-label">Pendentes</div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="section-rotas" class="section-page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>🗺️ Rotas Inteligentes</h2>
+                            <span class="badge">ARQUITETURA</span>
+                        </div>
+                        <div id="logistics-detail-map"></div>
+                        <div class="alert">2 pontos de coleta + 3 clientes + 1 fábrica</div>
+                        <div class="info-row">
+                            <span>Tipo Logística</span>
+                            <strong>Busca de Resíduo</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Tipo Logística</span>
+                            <strong>Entrega de Pedido</strong>
+                        </div>
+                        <button class="btn" onclick="otimizarRotas()">📍 Otimizar Rotas</button>
+                        <button class="btn btn-secondary" onclick="abrirRelatorioFrota()">📊 Relatório de Frota</button>
+                    </div>
+                </section>
+
+                <section id="section-lista" class="section-page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>📦 Listagem de Coletas</h2>
+                            <span class="badge">BACK-END + FETCH</span>
+                        </div>
+                        <div id="lista" class="list"></div>
+                        <div id="listaPagination" class="pagination-controls"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Relatório de Frota -->
+    <div id="fleetReportModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🚛 Relatório de Frota</h2>
+                <button class="modal-close" onclick="fecharRelatorioFrota()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-row">
+                    <span>KM Médio</span>
+                    <strong id="kmMedioModal">12 km</strong>
+                </div>
+                <div class="info-row">
+                    <span>Tempo Médio</span>
+                    <strong id="tempoMedioModal">45 min</strong>
+                </div>
+                <div class="info-row">
+                    <span>Eficiência</span>
+                    <strong>92%</strong>
+                </div>
+                <div class="alert">Simulação simples de cálculo de rotas.</div>
+                <div class="chart-container">
+                    <canvas id="rotaChartModal"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Resultado da Rota Otimizada -->
+    <div id="routeResultModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📍 Resultado da Rota</h2>
+                <button class="modal-close" onclick="fecharRelatorioRotas()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-row sequence-row">
+                    <span>Sequência</span>
+                    <div id="rotaSequencia" class="sequence-text" style="white-space: pre-line; margin-top: 8px; color: #1a2a3a;"></div>
+                </div>
+                <div class="info-row">
+                    <span>Distância Total</span>
+                    <strong id="rotaDistancia">0 km</strong>
+                </div>
+                <div class="info-row">
+                    <span>Tempo Estimado</span>
+                    <strong id="rotaTempo">0 min</strong>
+                </div>
+                <div class="info-row">
+                    <span>Paradas</span>
+                    <strong id="rotaParadas">0</strong>
+                </div>
+                <div class="alert">A rota otimizada foi gerada com base nos pontos de coleta atuais.</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
